@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050d1a">
+    <title>이세계의 문 | 신령의 세계</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <section id="start-screen" class="screen start-screen active">
+            <div class="title-block">
+                <p class="eyebrow">신령과 요괴의 세계</p>
+                <h1>이세계의 문</h1>
+                <p class="title-japanese">千と千尋の神隠し</p>
+                <p class="intro-copy">숨겨진 신령과 요괴의 짝을 찾아<br>기억의 문을 열어보세요.</p>
+            </div>
+            <button id="start-button" class="primary-button" type="button">게임 시작하기 <span aria-hidden="true">↗</span></button>
+            
+            <!-- 추가된 도감 버튼 -->
+            <button id="gallery-button" class="secondary-button" type="button" style="margin-top: 10px;">신령·요괴 도감 보러가기</button>
+            
+            <p class="footer-note">요괴와 신령의 기억을 모으는 게임</p>
+        </section>
+
+        <section id="difficulty-screen" class="screen difficulty-screen hidden" aria-labelledby="difficulty-title">
+            <div class="section-heading">
+                <p class="eyebrow">기억의 문을 선택하세요</p>
+                <h2 id="difficulty-title">난이도를 선택하세요</h2>
+                <p>더 많은 신령과 요괴를 기억할수록 문은 깊은 곳으로 열립니다.</p>
+            </div>
+            <div class="difficulty-list">
+                <button class="difficulty-card" type="button" data-difficulty="easy">
+                    <span class="difficulty-icon sakura" aria-hidden="true">✿</span>
+                    <span class="difficulty-info"><strong>쉬움 <small>易しい</small></strong><span>2 × 4 / 4쌍</span></span>
+                    <span class="arrow" aria-hidden="true">›</span>
+                </button>
+                <button class="difficulty-card" type="button" data-difficulty="normal">
+                    <span class="difficulty-icon wave" aria-hidden="true">〰</span>
+                    <span class="difficulty-info"><strong>중간 <small>普通</small></strong><span>3 × 4 / 6쌍</span></span>
+                    <span class="arrow" aria-hidden="true">›</span>
+                </button>
+                <button class="difficulty-card" type="button" data-difficulty="hard">
+                    <span class="difficulty-icon torii" aria-hidden="true">⛩</span>
+                    <span class="difficulty-info"><strong>어려움 <small>難しい</small></strong><span>4 × 4 / 8쌍</span></span>
+                    <span class="arrow" aria-hidden="true">›</span>
+                </button>
+            </div>
+            <button id="difficulty-back" class="text-button" type="button">← 처음으로</button>
+        </section>
+
+        <section id="game-screen" class="screen game-screen hidden" aria-labelledby="game-title">
+            <header class="game-header">
+                <button id="game-back" class="outline-button" type="button">← 돌아가기</button>
+                <div class="game-title"><h2 id="game-title">이세계의 문</h2><p id="difficulty-label">쉬움 · 2 × 4 / 4쌍</p></div>
+                <button id="pause-button" class="icon-button" type="button" aria-label="게임 메뉴">Ⅱ</button>
+            </header>
+            <div class="stats" aria-label="게임 기록">
+                <div class="stat"><strong id="moves-count">0</strong><span>이동</span></div>
+                <div class="stat"><strong><span id="matches-count">0</span> / <span id="pairs-count">4</span></strong><span>매칭</span></div>
+                <div class="stat"><strong id="time-count">00:00</strong><span>시간</span></div>
+            </div>
+            <div class="progress-track"><span id="progress-bar"></span></div>
+            <div id="card-grid" class="card-grid" aria-live="polite"></div>
+            <button id="restart-button" class="secondary-button" type="button">처음부터 다시</button>
+        </section>
+
+        <!-- 새로 추가된 요괴 도감 화면 섹션 -->
+        <section id="gallery-screen" class="screen hidden" aria-labelledby="gallery-title">
+            <div class="section-heading">
+                <p class="eyebrow">기억의 파편 속에 담긴 이야기</p>
+                <h2 id="gallery-title">신령·요괴 도감</h2>
+            </div>
+            <div id="gallery-grid" class="gallery-container"></div>
+            <button id="gallery-back" class="text-button" type="button">← 처음으로</button>
+        </section>
+
+    </main>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-panel">
+            <p class="eyebrow" id="modal-eyebrow">기억의 문</p>
+            <h2 id="modal-title">잠시 쉬어가세요</h2>
+            <p id="modal-message">게임은 그대로 멈춰 있습니다.</p>
+            <div id="modal-result" class="modal-result hidden"></div>
+            <div class="modal-actions">
+                <button id="modal-primary" class="primary-button" type="button">이어하기</button>
+                <button id="modal-secondary" class="text-button" type="button">그만하기</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
