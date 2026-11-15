@@ -104,6 +104,7 @@ let currentDifficulty = null;
 let cards = [];
 let firstCard = null;
 let locked = false;
+let modalMode = 'game';
 let matchedPairs = 0;
 let moves = 0;
 let elapsedSeconds = 0;
@@ -211,15 +212,22 @@ function handleCardClick(card) {
   const secondCard = card;
   const isMatch = firstCard.dataset.id === secondCard.dataset.id;
   updateStats();
+  
   if (isMatch) {
-    const matchedCard = secondCard;
     firstCard.classList.add('is-matched');
     secondCard.classList.add('is-matched');
-    matchedCard.dataset.detailReady = 'true';
-    const detail = document.createElement('span');
-    detail.className = 'detail-content';
-    detail.innerHTML = `<strong>${cards.find(item => item.id === matchedCard.dataset.id).name}</strong><span>${cards.find(item => item.id === matchedCard.dataset.id).desc}</span>`;
-    matchedCard.querySelector('.card-front').append(detail);
+    
+    // 맞춘 두 카드 모두에 상세 설명 데이터와 요소를 똑같이 넣어줍니다.
+    [firstCard, secondCard].forEach(matchedCard => {
+      matchedCard.dataset.detailReady = 'true';
+      if (!matchedCard.querySelector('.detail-content')) {
+        const detail = document.createElement('span');
+        detail.className = 'detail-content';
+        detail.innerHTML = `<strong>${cards.find(item => item.id === matchedCard.dataset.id).name}</strong><span>${cards.find(item => item.id === matchedCard.dataset.id).desc}</span>`;
+        matchedCard.querySelector('.card-front').append(detail);
+      }
+    });
+
     matchedPairs += 1;
     firstCard = null;
     updateStats();
@@ -231,6 +239,7 @@ function handleCardClick(card) {
 }
 
 function openPauseModal() {
+  modalMode = 'game';
   isPaused = true;
   modalTitle.textContent = '잠시 쉬어가세요';
   modalMessage.textContent = '게임은 그대로 멈춰 있습니다.';
@@ -241,6 +250,7 @@ function openPauseModal() {
 }
 
 function showCompleteModal() {
+  modalMode = 'game';
   isPaused = true;
   modalTitle.textContent = 'All Clear';
   modalMessage.textContent = '모든 신령의 기억을 찾아냈습니다.';
@@ -263,13 +273,24 @@ document.querySelector('#pause-button').addEventListener('click', openPauseModal
 document.querySelector('#game-back').addEventListener('click', openPauseModal);
 document.querySelector('#restart-button').addEventListener('click', () => createBoard(currentDifficulty));
 
-modalPrimary.addEventListener('click', () => { 
-  if (modalResult.classList.contains('hidden')) {
-    closeModal(); 
-  } else {
-    closeModal(); 
-    beginGame(currentDifficulty); 
+modalPrimary.addEventListener('click', () => {
+
+  // 도감 모달일 때
+  if (modalMode === 'gallery') {
+    closeModal();
+    modalSecondary.classList.remove('hidden');
+    return;
   }
+
+  // 게임 완료 모달일 때
+  if (!modalResult.classList.contains('hidden')) {
+    closeModal();
+    beginGame(currentDifficulty);
+    return;
+  }
+
+  // 일시정지 모달일 때
+  closeModal();
 });
 
 modalSecondary.addEventListener('click', () => { 
@@ -294,6 +315,8 @@ function initGallery() {
     
     // 카드를 클릭했을 때 그림과 커진 글씨가 모달창에 뜨도록 설정
     item.addEventListener('click', () => {
+      modalMode = 'gallery';
+      modalSecondary.classList.add('hidden');
       modalTitle.textContent = yokai.name;
       modalMessage.textContent = yokai.desc;
       modalResult.classList.add('hidden');
@@ -328,7 +351,3 @@ document.querySelector('#gallery-back').addEventListener('click', () => {
   showScreen('start'); 
 });
 
-// 모달 '확인' 버튼을 눌렀을 때 처리
-modalPrimary.addEventListener('click', () => {
-  modalSecondary.classList.remove('hidden');
-});
