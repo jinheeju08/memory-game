@@ -745,3 +745,64 @@ h1 {
   line-height: 1.6;
   word-break: keep-all;
 }
+
+/* --- 매칭된 카드 및 상세 보기(.is-detail) 완벽 정렬 --- */
+.card .card-front {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #101f31;
+}
+
+/* 카드를 클릭해서 상세 설명이 열렸을 때 (.is-detail) */
+.card.is-detail .card-front {
+  padding: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: #0a1526;
+}
+
+/* 상세 보기 상태일 때 이미지 크기를 위쪽에 알맞게 고정 */
+.card.is-detail .card-front img { 
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-top: 4px;
+  display: block;
+}
+
+/* 상세 보기 설명 영역 스타일 */
+.card .detail-content {
+  display: none; /* 평소에는 숨김 */
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+  width: 100%;
+}
+
+/* 상세 보기가 활성화(.is-detail)되면 표시 */
+.card.is-detail .detail-content {
+  display: flex;
+}
+
+.card .detail-content strong { 
+  color: var(--accent-soft); 
+  font-size: 0.8rem; 
+  line-height: 1.2;
+}
+
+.card .detail-content span { 
+  color: #a6bad0; 
+  font-size: 0.62rem; 
+  line-height: 1.35; 
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
