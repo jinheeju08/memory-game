@@ -79,7 +79,6 @@ const difficultyConfig = {
   hard: { label: '어려움 · 4 × 4 / 8쌍', pairs: 8, columns: 4 }
 };
 
-// 도감 화면(gallery)이 추가되었습니다.
 const screens = { 
   start: document.querySelector('#start-screen'), 
   difficulty: document.querySelector('#difficulty-screen'), 
@@ -155,7 +154,7 @@ function createBoard(difficulty) {
   const selected = shuffle(yokaiData).slice(0, config.pairs);
   cards = shuffle([...selected, ...selected]);
   firstCard = null;
-  locked = true; // 1. 카드를 보여주는 3초 동안 클릭하지 못하게 잠금
+  locked = true;
   matchedPairs = 0;
   moves = 0;
   elapsedSeconds = 0;
@@ -164,24 +163,19 @@ function createBoard(difficulty) {
   pairsCount.textContent = config.pairs;
   cardGrid.className = `card-grid columns-${config.columns}`;
   
-  // 카드를 생성하고 화면에 추가
   const cardElements = cards.map(createCard);
   cardGrid.replaceChildren(...cardElements);
   
-  // 2. 생성된 모든 카드를 강제로 앞면(is-face-up)으로 뒤집기
   cardElements.forEach(card => card.classList.add('is-face-up'));
   
   updateStats();
   showScreen('game');
   clearInterval(timerId);
   
-  // 3. 3초(3000ms) 후에 실행될 동작 설정
   setTimeout(() => {
-    // 모든 카드를 다시 뒷면으로 덮기
     cardElements.forEach(card => card.classList.remove('is-face-up'));
-    locked = false; // 카드 클릭 잠금 해제
+    locked = false;
     
-    // 이때부터 1초마다 타이머 증가
     timerId = setInterval(() => { 
       if (!isPaused) { 
         elapsedSeconds += 1; 
@@ -217,7 +211,6 @@ function handleCardClick(card) {
     firstCard.classList.add('is-matched');
     secondCard.classList.add('is-matched');
     
-    // 맞춘 두 카드 모두에 상세 설명 데이터와 요소를 똑같이 넣어줍니다.
     [firstCard, secondCard].forEach(matchedCard => {
       matchedCard.dataset.detailReady = 'true';
       if (!matchedCard.querySelector('.detail-content')) {
@@ -265,7 +258,6 @@ function closeModal() { modal.classList.add('hidden'); isPaused = false; }
 function goToDifficulty() { clearInterval(timerId); closeModal(); showScreen('difficulty'); }
 function goHome() { clearInterval(timerId); closeModal(); showScreen('start'); }
 
-/* === 이벤트 리스너 === */
 document.querySelector('#start-button').addEventListener('click', () => showScreen('difficulty'));
 document.querySelector('#difficulty-back').addEventListener('click', () => showScreen('start'));
 document.querySelectorAll('[data-difficulty]').forEach(button => button.addEventListener('click', () => beginGame(button.dataset.difficulty)));
@@ -274,22 +266,16 @@ document.querySelector('#game-back').addEventListener('click', openPauseModal);
 document.querySelector('#restart-button').addEventListener('click', () => createBoard(currentDifficulty));
 
 modalPrimary.addEventListener('click', () => {
-
-  // 도감 모달일 때
   if (modalMode === 'gallery') {
     closeModal();
     modalSecondary.classList.remove('hidden');
     return;
   }
-
-  // 게임 완료 모달일 때
   if (!modalResult.classList.contains('hidden')) {
     closeModal();
     beginGame(currentDifficulty);
     return;
   }
-
-  // 일시정지 모달일 때
   closeModal();
 });
 
@@ -297,9 +283,6 @@ modalSecondary.addEventListener('click', () => {
   if (modalResult.classList.contains('hidden')) goToDifficulty(); 
   else goHome(); 
 });
-
-
-/* === 도감(Gallery) 관련 코드 수정 === */
 
 function initGallery() {
   const galleryGrid = document.querySelector('#gallery-grid');
@@ -313,7 +296,6 @@ function initGallery() {
       <h3>${yokai.name}</h3>
     `;
     
-    // 카드를 클릭했을 때 그림과 커진 글씨가 모달창에 뜨도록 설정
     item.addEventListener('click', () => {
       modalMode = 'gallery';
       modalSecondary.classList.add('hidden');
@@ -321,14 +303,13 @@ function initGallery() {
       modalMessage.textContent = yokai.desc;
       modalResult.classList.add('hidden');
       modalPrimary.textContent = '확인';
-      modalSecondary.classList.add('hidden'); // '그만하기' 버튼 숨기기
+      modalSecondary.classList.add('hidden');
       
-      // 모달창 제목(h2) 위에 이미지가 없으면 추가하고, 있으면 이미지를 바꿔치기
       let modalImg = modal.querySelector('.modal-gallery-img');
       if (!modalImg) {
         modalImg = document.createElement('img');
         modalImg.className = 'modal-gallery-img';
-        modalTitle.before(modalImg); // h2 태그 바로 위에 이미지 삽입
+        modalTitle.before(modalImg);
       }
       modalImg.src = yokai.image;
       modalImg.alt = yokai.name;
@@ -340,14 +321,11 @@ function initGallery() {
   });
 }
 
-// 2. 메인 화면에서 '신령·요괴 도감 보러가기' 버튼 클릭 시
 document.querySelector('#gallery-button').addEventListener('click', () => {
   initGallery(); 
   showScreen('gallery'); 
 });
 
-// 3. 도감 화면에서 '처음으로(뒤로가기)' 버튼 클릭 시
 document.querySelector('#gallery-back').addEventListener('click', () => {
   showScreen('start'); 
 });
-
